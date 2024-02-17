@@ -1,3 +1,5 @@
 folium 
 streamlit
 streamlit-folium
+astrapy>=0.6.0
+openai>=1.0.0
