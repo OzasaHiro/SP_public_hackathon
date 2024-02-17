@@ -86,11 +86,11 @@ n = 10  # 取得したい結果の数
 search_results = find_food_and_shop_by_quote(query_quote, n)
 stores = search_results["results"]
 
-# 各店舗の位置にマーカーを追加
 for store in stores:
     latitude = float(store["latitude"])
     longitude = float(store["longitude"])
-    folium.Marker([latitude, longitude], popup=f"{store['shop']}: {store['food']}").add_to(sf_map)
+    popup_text = f"{store['shop']}: <br>Time: {store['start_time']} - {store['end_time']}<br>{store['food']}"
+    folium.Marker([latitude, longitude], popup=popup_text).add_to(sf_map)
 
 # Streamlitで地図を表示
 folium_static(sf_map)
