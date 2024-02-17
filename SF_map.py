@@ -11,6 +11,9 @@ import openai
 import os
 from typing import List, Dict, Optional
 
+import datetime
+import pytz
+
 ASTRA_DB_API_ENDPOINT = os.environ['ASTRA_DB_API_ENDPOINT']
 ASTRA_DB_APPLICATION_TOKEN = os.environ['ASTRA_DB_APPLICATION_TOKEN']
 OPENAI_API_KEY= os.environ['OPENAI_API_KEY']
@@ -74,6 +77,11 @@ longitude = -122.4194
 
 user_input = st.text_input("What would you like to eat or drink?", "Cheese burger")
 
+# サンフランシスコのタイムゾーンを設定
+sf_timezone = pytz.timezone('America/Los_Angeles')
+# サンフランシスコの現在時刻を取得
+current_time = datetime.datetime.now(sf_timezone).strftime('%H:%M')
+
 
 # 地図を生成
 sf_map = folium.Map(location=[latitude, longitude], zoom_start=12)
@@ -87,10 +95,18 @@ search_results = find_food_and_shop_by_quote(query_quote, n)
 stores = search_results["results"]
 
 for store in stores:
-    latitude = float(store["latitude"])
-    longitude = float(store["longitude"])
-    popup_text = f"{store['shop']}: <br>Time: {store['start_time']} - {store['end_time']}<br>{store['food']}"
-    folium.Marker([latitude, longitude], popup=popup_text).add_to(sf_map)
+    # 開店時間と閉店時間をdatetimeオブジェクトに変換
+    start_time = datetime.datetime.strptime(store['start_time'], '%H:%M').time()
+    end_time = datetime.datetime.strptime(store['end_time'], '%H:%M').time()
+    current_sf_time = datetime.datetime.strptime(current_time, '%H:%M').time()
+    
+    # 現在時刻が開店時間と閉店時間の間にあるかどうかを確認
+    if start_time <= current_sf_time <= end_time:
+        # マーカーに開店時間と閉店時間を含むポップアップを追加
+        latitude = float(store["latitude"])
+        longitude = float(store["longitude"])
+        popup_text = f"{store['shop']}: <br>Time: {store['start_time']} - {store['end_time']}<br>{store['food']}"
+        folium.Marker([latitude, longitude], popup=popup_text).add_to(sf_map)
 
 # Streamlitで地図を表示
 folium_static(sf_map)
