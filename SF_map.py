@@ -8,6 +8,7 @@ from collections import Counter
 
 from astrapy.db import AstraDB
 import openai
+import os
 
 ASTRA_DB_API_ENDPOINT = os.environ['ASTRA_DB_API_ENDPOINT']
 ASTRA_DB_APPLICATION_TOKEN = os.environ['ASTRA_DB_APPLICATION_TOKEN']
