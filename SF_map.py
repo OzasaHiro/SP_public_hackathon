@@ -71,36 +71,33 @@ def find_food_and_shop_by_quote(query_quote: str, n: int, tags: Optional[List[st
 client = openai.OpenAI(api_key=OPENAI_API_KEY)
 embedding_model_name = "text-embedding-3-small"
 
-# サンフランシスコの中心の緯度と経度
-latitude = 37.7749
-longitude = -122.4194
+def main():
+    st.title("San francisco mobile food map")
 
-user_input = st.text_input("What would you like to eat or drink?", "Cheese burger")
-
-# サンフランシスコのタイムゾーンを設定
-sf_timezone = pytz.timezone('America/Los_Angeles')
-# サンフランシスコの現在時刻を取得
-current_time = datetime.datetime.now(sf_timezone).strftime('%H:%M')
-
-
-# 地図を生成
-sf_map = folium.Map(location=[latitude, longitude], zoom_start=12)
-
-# 検索クエリと結果数
-query_quote = user_input
-n = 10  # 取得したい結果の数
-
-# 検索結果の取得
-search_results = find_food_and_shop_by_quote(query_quote, n)
-stores = search_results["results"]
-
+    user_input = st.text_input("What would you like to eat or drink?", "Cheese burger")
     
-# 各店舗の位置にマーカーを追加
-for store in stores:
-    latitude = float(store["latitude"])
-    longitude = float(store["longitude"])
-    popup_text = f"<b>{store['shop']}</b>: <br>Time: {store['start_time']} - {store['end_time']}<br><br>{store['food']}"
-    folium.Marker([latitude, longitude], popup=popup_text).add_to(sf_map)
+    latitude = 37.7749
+    longitude = -122.4194
 
-# Streamlitで地図を表示
-folium_static(sf_map)
+    sf_timezone = pytz.timezone('America/Los_Angeles')
+    current_time = datetime.datetime.now(sf_timezone).strftime('%H:%M')
+    
+    sf_map = folium.Map(location=[latitude, longitude], zoom_start=12)
+
+    query_quote = user_input
+    n = 10
+    
+    search_results = find_food_and_shop_by_quote(query_quote, n)
+    stores = search_results["results"]
+    
+    for store in stores:
+        latitude = float(store["latitude"])
+        longitude = float(store["longitude"])
+        popup_text = f"<b>{store['shop']}</b>: <br>Time: {store['start_time']} - {store['end_time']}<br><br>{store['food']}"
+        folium.Marker([latitude, longitude], popup=popup_text).add_to(sf_map)
+    
+    folium_static(sf_map)
+    
+
+if __name__ == "__main__":
+    main()
