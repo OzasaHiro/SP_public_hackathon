@@ -94,19 +94,13 @@ n = 10  # 取得したい結果の数
 search_results = find_food_and_shop_by_quote(query_quote, n)
 stores = search_results["results"]
 
-for store in stores:
-    # 開店時間と閉店時間をdatetimeオブジェクトに変換
-    start_time = datetime.datetime.strptime(store['start_time'], '%H:%M').time()
-    end_time = datetime.datetime.strptime(store['end_time'], '%H:%M').time()
-    current_sf_time = datetime.datetime.strptime(current_time, '%H:%M').time()
     
-    # 現在時刻が開店時間と閉店時間の間にあるかどうかを確認
-    if start_time <= current_sf_time <= end_time:
-        # マーカーに開店時間と閉店時間を含むポップアップを追加
-        latitude = float(store["latitude"])
-        longitude = float(store["longitude"])
-        popup_text = f"{store['shop']}: <br>Time: {store['start_time']} - {store['end_time']}<br>{store['food']}"
-        folium.Marker([latitude, longitude], popup=popup_text).add_to(sf_map)
+# 各店舗の位置にマーカーを追加
+for store in stores:
+    latitude = float(store["latitude"])
+    longitude = float(store["longitude"])
+    popup_text = f"<b>{store['shop']}</b>: <br>Time: {store['start_time']} - {store['end_time']}<br>{store['food']}"
+    folium.Marker([latitude, longitude], popup=popup_text).add_to(sf_map)
 
 # Streamlitで地図を表示
 folium_static(sf_map)
