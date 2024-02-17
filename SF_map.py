@@ -74,7 +74,7 @@ embedding_model_name = "text-embedding-3-small"
 def main():
     st.title("San francisco mobile food map")
 
-    user_input = st.text_input("What would you like to eat or drink?", "Cheese burger")
+    user_input = st.text_input("What would you like to eat or drink?")
     
     latitude = 37.7749
     longitude = -122.4194
