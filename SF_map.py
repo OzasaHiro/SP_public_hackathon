@@ -99,7 +99,7 @@ stores = search_results["results"]
 for store in stores:
     latitude = float(store["latitude"])
     longitude = float(store["longitude"])
-    popup_text = f"<b>{store['shop']}</b>: <br>Time: {store['start_time']} - {store['end_time']}<br>{store['food']}"
+    popup_text = f"<b>{store['shop']}</b>: <br>Time: {store['start_time']} - {store['end_time']}<br><br>{store['food']}"
     folium.Marker([latitude, longitude], popup=popup_text).add_to(sf_map)
 
 # Streamlitで地図を表示
